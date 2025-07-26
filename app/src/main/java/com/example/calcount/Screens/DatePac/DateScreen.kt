@@ -4,6 +4,8 @@ import android.R.attr.onClick
 import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,11 +36,13 @@ import com.example.calcount.Screen
 
 //val datess = listOf(CalDate(date = "16/3/2001",totalcal = "200"),CalDate(date = "05/6/2002",totalcal = "300"))
 @Composable
-fun DateScreen(navController: NavController,
+fun DateScreen(navController: NavController, innerPadding : PaddingValues,
                viewModel : ViewModelDateList = androidx.hilt.navigation.compose.hiltViewModel()){
 //    val dates = listOf(CalDate(date = "16/3/2001",totalcal = "200"),CalDate(date = "05/6/2002",totalcal = "300"))
     val dates by viewModel.dates.collectAsState()
-    LazyColumn (modifier = Modifier.fillMaxSize()){
+    LazyColumn (
+        contentPadding = innerPadding,
+        modifier = Modifier.fillMaxSize()){
         items(dates){
             date ->
             DateCard(date){
@@ -67,12 +71,13 @@ fun DateCard(date : CalDate,onClick : () -> Unit){
         )
     ) {
         Row(modifier = Modifier.fillMaxSize().padding(20.dp),
-            verticalAlignment = Alignment.CenterVertically) {
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start) {
         Text(text = date.date, color = Color.Black,
-            fontSize = 20.sp,modifier = Modifier.weight(1f))
+            fontSize = 16.sp,modifier = Modifier.weight(0.5f))
         Text(text =
             buildAnnotatedString {
-            append("Total Calories : ")
+            append("Calories : ")
             pushStyle(SpanStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp))
             append("${date.totalcal}")
                 pop()

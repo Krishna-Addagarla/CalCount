@@ -4,6 +4,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -48,7 +49,7 @@ import com.example.calcount.Data.Local.CalItems
 import com.example.calcount.BuildConfig
 
 @Composable
-fun ItemsScreen(dateid : Int,
+fun ItemsScreen(dateid : Int,innerPadding : PaddingValues,
                 navController: NavController,
                 viewModel : ViewModelItems = androidx.hilt.navigation.compose.hiltViewModel()){
     val dateid = dateid
@@ -61,7 +62,7 @@ fun ItemsScreen(dateid : Int,
     viewModel.loadItems(dateid)
     Column(modifier = Modifier
         .fillMaxSize()
-        .padding(10.dp)) {
+        .padding(innerPadding)) {
         OutlinedTextField(
             value = searchtext,
             label = { Text("Search Items here") },
@@ -78,7 +79,7 @@ fun ItemsScreen(dateid : Int,
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(16.dp,0.dp,16.dp,10.dp)
                     .heightIn(40.dp)
 //                .border(2.dp, Color.Black,shape = RoundedCornerShape(32.dp))
 
@@ -97,6 +98,7 @@ fun ItemsScreen(dateid : Int,
                         .fillMaxSize()
                         .clickable {
                             viewModel.slectedItem(item.fdcId, apiKey, dateid)
+                            searchtext = ""
                         })
                     {
                         Column(modifier = Modifier.fillMaxSize()) {

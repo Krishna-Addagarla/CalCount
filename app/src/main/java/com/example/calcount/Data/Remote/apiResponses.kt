@@ -1,5 +1,7 @@
 package com.example.calcount.Data.Remote
 
+import com.google.gson.annotations.SerializedName
+
 data class FoodSearchResponse(
    val foods : List<FoodSummary>
 )
@@ -15,7 +17,13 @@ data class FoodDetail(
 )
 
 data class Nutrient(
-    val nutrientName: String,
-    val value: Double
+    val amount: Double?,
+    val nutrient: NutrientInfo? = null
 )
+
+data class NutrientInfo(
+    val name: String?,
+    val unitName: String?
+)
+
 

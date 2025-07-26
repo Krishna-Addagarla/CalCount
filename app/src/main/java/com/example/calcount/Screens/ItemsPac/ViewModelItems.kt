@@ -34,7 +34,7 @@ class ViewModelItems @Inject constructor(private val repository : Repository) : 
 
     fun slectedItem(fdcId : Long,apiKey: String,dateId : Int){
         viewModelScope.launch {
-            repository.fetchFoodCalories(fdcId , apiKey,dateId)
+            repository.fetchFoodCalories(fdcId,apiKey,dateId)
         }
         viewModelScope.launch {
             repository.getItems(dateId)

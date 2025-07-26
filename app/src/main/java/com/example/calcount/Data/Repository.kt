@@ -44,14 +44,16 @@ class Repository @Inject constructor(
     }
 
     suspend fun fetchFoodCalories(fdcId : Long, apiKey: String,dateId : Int){
+        val fdcId = fdcId
         val detail = api.searchItem(fdcId,apiKey)
 
         val calories = detail.foodNutrients
-            .firstOrNull{it.nutrientName.equals("Energy",ignoreCase = true)}
-            ?.value ?: 0.0
+            .firstOrNull{it.nutrient?.name.equals("Energy",ignoreCase = true)}
+            ?.amount ?: 0.0
 
         val calItem = CalItems(itemName = detail.description, itemCal = calories,dateid = dateId)
         calItemsDao.addItem(calItem)
+        calDateDao.updateTotalCal()
 
     }
 }
