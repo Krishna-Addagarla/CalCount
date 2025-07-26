@@ -25,15 +25,16 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CalCountTheme {
-                Scaffold(
-                    topBar = {
-                        TopAppBar(
-                            title = { Text("CalCount") }
-                        )
-                    }
-                ) { innerPadding ->
-                    navHost(Modifier.padding(innerPadding))
-                }
+//                Scaffold(
+//                    topBar = {
+//                        TopAppBar(
+//                            title = { Text("CalCount") }
+//                        )
+//                    }
+//                ) { innerPadding ->
+//                    navHost(Modifier.padding(innerPadding))
+//                }
+                navHost()
 
             }
         }

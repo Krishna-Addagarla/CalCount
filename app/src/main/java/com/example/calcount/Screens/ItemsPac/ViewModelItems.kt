@@ -21,6 +21,10 @@ class ViewModelItems @Inject constructor(private val repository : Repository) : 
     private val _selectedItems = MutableStateFlow<List<CalItems>>(emptyList())
     val selectedItems : StateFlow<List<CalItems>> = _selectedItems
 
+    init {
+
+    }
+
     fun searchItems(query : String,apiKey : String){
         viewModelScope.launch{
             val ItemsList =repository.searchFood(query,apiKey)
@@ -39,4 +43,20 @@ class ViewModelItems @Inject constructor(private val repository : Repository) : 
                 }
         }
     }
+
+    fun deleteItems(itemid : Int){
+        viewModelScope.launch {
+            repository.deleteItem(itemid)
+        }
+    }
+
+    fun loadItems(dateId : Int){
+        viewModelScope.launch {
+            repository.getItems(dateId)
+                .collect { item ->
+                    _selectedItems.value = item
+                }
+        }
+    }
+
 }

@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface CalDateDao {
 
-    @Query("Select * FROM CalDate ORDER BY id ASC")
+    @Query("Select * FROM CalDate ORDER BY id DESC")
     fun getCalByDate() : Flow<List<CalDate>>
 
 

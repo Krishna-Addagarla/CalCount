@@ -21,9 +21,11 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -40,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.calcount.Data.Local.CalItems
 import com.example.calcount.BuildConfig
@@ -48,15 +51,21 @@ import com.example.calcount.BuildConfig
 fun ItemsScreen(dateid : Int,
                 navController: NavController,
                 viewModel : ViewModelItems = androidx.hilt.navigation.compose.hiltViewModel()){
+    val dateid = dateid
     val apiKey = BuildConfig.USDA_API_KEY
 //    var foodItems = listOf(CalItems(itemName = "Pizza",itemCal = 200.0, dateid = 1),CalItems(itemName = "Chicken Burger",itemCal = 250.0, dateid = 1))
     var searchtext by remember { mutableStateOf("") }
     val foodSuggest by viewModel.items.collectAsState()
     val foodItems by viewModel.selectedItems.collectAsState()
-    Column(modifier = Modifier.fillMaxSize().padding(10.dp)) {
+
+    viewModel.loadItems(dateid)
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(10.dp)) {
         OutlinedTextField(
             value = searchtext,
             label = { Text("Search Items here") },
+            shape = RoundedCornerShape(32.dp),
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Search,
@@ -67,34 +76,45 @@ fun ItemsScreen(dateid : Int,
                 viewModel.searchItems(newText,apiKey)},
             singleLine = true,
             modifier =
-                Modifier.fillMaxWidth().padding(16.dp)
-                .heightIn(40.dp)
-                .border(2.dp, Color.Black,shape = RoundedCornerShape(32.dp)))
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .heightIn(40.dp)
+//                .border(2.dp, Color.Black,shape = RoundedCornerShape(32.dp))
+
+        )
+
 
 
         if (searchtext.isNotEmpty()){
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(6.dp),
-                modifier = Modifier.fillMaxSize().padding(16.dp)) {
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)) {
                 items(foodSuggest) {item ->
-                    Card(modifier = Modifier.fillMaxSize()
-                        .clickable{
-                            viewModel.slectedItem(item.fdcId,apiKey,dateid)})
+                    Card(modifier = Modifier
+                        .fillMaxSize()
+                        .clickable {
+                            viewModel.slectedItem(item.fdcId, apiKey, dateid)
+                        })
                     {
                         Column(modifier = Modifier.fillMaxSize()) {
                             Text(text = item.description,
-                                modifier = Modifier.fillMaxSize().padding(8.dp),
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(8.dp),
                                 fontSize = 16.sp)
                         }
                     }
                 }
             }
         }
-        Spacer(modifier = Modifier.height(100.dp))
+        Spacer(modifier = Modifier.height(50.dp))
         LazyColumn(modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(10.dp)) {
             items(foodItems) { item ->
-                FoodCard(item)
+                FoodCard(item,viewModel)
 
             }
         }
@@ -103,32 +123,56 @@ fun ItemsScreen(dateid : Int,
 }
 
 @Composable
-fun FoodCard( item : CalItems){
-    Card (
-        modifier = Modifier.fillMaxWidth().height(80.dp).padding(horizontal = 16.dp)
+fun FoodCard(item: CalItems,viewModel : ViewModelItems) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(80.dp)
+            .padding(horizontal = 16.dp)
             .border(1.dp, Color.Black, shape = RoundedCornerShape(10.dp)),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         ),
-    ){
-        Row(modifier = Modifier.fillMaxSize().padding(10.dp),
-            verticalAlignment = Alignment.CenterVertically) {
-            Text(item.itemName,
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                item.itemName,
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 18.sp,
-                modifier = Modifier.weight(0.5f))
+                fontSize = 16.sp,
+                modifier = Modifier.weight(0.5f)
+            )
             Spacer(modifier = Modifier.width(20.dp))
-            Text(text = buildAnnotatedString {
-                pushStyle(SpanStyle(color = Color.Black, fontSize = 16.sp))
-                append("Cal : ")
-                pushStyle(SpanStyle(Color.Black, fontSize = 20.sp, fontWeight = FontWeight.Bold))
-                append("${item.itemCal}")
-                pop()
-            },
-                modifier = Modifier.weight(0.4f))
+            Text(
+                text = buildAnnotatedString {
+                    pushStyle(SpanStyle(color = Color.Black, fontSize = 14.sp))
+                    append("Cal : ")
+                    pushStyle(
+                        SpanStyle(
+                            Color.Black,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                    append("${item.itemCal}")
+                    pop()
+                },
+                modifier = Modifier.weight(0.4f)
+            )
             Spacer(modifier = Modifier.width(20.dp))
-            Icon(Icons.Default.Delete, contentDescription = "Delete the Item",
-                modifier = Modifier.weight(0.1f))
+            IconButton(onClick = {
+                viewModel.deleteItems(item.id)
+            }) {
+                Icon(
+                    Icons.Default.Delete, contentDescription = "Delete the Item",
+                    modifier = Modifier.weight(0.1f)
+                )
+            }
+
         }
     }
 
