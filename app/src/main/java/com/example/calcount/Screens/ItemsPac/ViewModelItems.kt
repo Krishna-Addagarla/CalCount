@@ -47,6 +47,7 @@ class ViewModelItems @Inject constructor(private val repository : Repository) : 
     fun deleteItems(itemid : Int){
         viewModelScope.launch {
             repository.deleteItem(itemid)
+            repository.updateTotalCal()
         }
     }
 

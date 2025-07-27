@@ -1,5 +1,6 @@
 package com.example.calcount.Screens.ItemsPac
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -62,7 +63,9 @@ fun ItemsScreen(dateid : Int,innerPadding : PaddingValues,
     viewModel.loadItems(dateid)
     Column(modifier = Modifier
         .fillMaxSize()
-        .padding(innerPadding)) {
+        .padding(innerPadding)
+        .background(Color.White)
+    ) {
         OutlinedTextField(
             value = searchtext,
             label = { Text("Search Items here") },
@@ -112,7 +115,7 @@ fun ItemsScreen(dateid : Int,innerPadding : PaddingValues,
                 }
             }
         }
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         LazyColumn(modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(10.dp)) {
             items(foodItems) { item ->

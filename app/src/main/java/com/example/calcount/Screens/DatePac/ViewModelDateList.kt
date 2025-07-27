@@ -26,6 +26,12 @@ class ViewModelDateList @Inject constructor(private val repository : Repository)
         checkAndCreateMissingDates()
     }
 
+    private fun updateTotal(){
+        viewModelScope.launch {
+            repository.updateTotalCal()
+        }
+    }
+
     private fun checkAndCreateMissingDates() {
         viewModelScope.launch {
             val existingDatesList = repository.getDates().firstOrNull() ?: emptyList()
@@ -77,6 +83,7 @@ class ViewModelDateList @Inject constructor(private val repository : Repository)
 
     fun getCalories(){
         viewModelScope.launch {
+            repository.updateTotalCal()
             repository.getDates()
                 .collect { dateList ->
                     _dates.value= dateList
